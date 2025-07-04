@@ -117,8 +117,8 @@ export default function Dashboard() {
               >
                 <Sparkles className="h-10 w-10 text-blue-400" />
               </motion.div>
-              <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent">
-                Game Analytics Hub
+              <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent mb:2">
+                Aquila Play Analytics
               </h1>
               <motion.div
                 animate={{ rotate: -360 }}
@@ -138,7 +138,7 @@ export default function Dashboard() {
           </motion.div>
 
           {/* Enhanced Overview Stats */}
-          <motion.div
+          {/* <motion.div
             className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-16"
             variants={containerVariants}
             initial="hidden"
@@ -237,7 +237,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </motion.div>
-          </motion.div>
+          </motion.div> */}
 
           {/* Enhanced Games Grid */}
           <motion.div
