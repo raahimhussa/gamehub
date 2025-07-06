@@ -16,8 +16,9 @@ import {
   PieChart,
   Pie,
   Cell,
+  Legend,
 } from "recharts"
-import { Trophy, Target, Clock, TrendingUp, GamepadIcon, Star, Calendar, Timer } from "lucide-react"
+import { Trophy, Target, Clock, TrendingUp, GamepadIcon, Star, Calendar, Timer, Users } from "lucide-react"
 import { motion } from "framer-motion"
 
 interface GameSession {
@@ -42,9 +43,36 @@ interface Statistics {
   lastUpdated: string
 }
 
+interface AgentPersona {
+  name: string
+  description: string
+  goals: {
+    explore_coverage?: number
+    interaction_count?: number
+    combat_engagement?: number
+    objective_completion?: number
+    score_maximization?: number
+    defend_zone_success?: number
+    ally_protection?: number
+    agent_interference?: number
+    objective_disruption?: number
+  }
+  behavior_parameters: {
+    movement_speed: string
+    pathfinding_bias?: string
+    avoid_conflict?: boolean
+    target_priority?: string
+    retry_failed_objectives?: boolean
+    patrol_radius?: number
+    aggro_response_time?: number
+    ignore_objectives?: boolean
+  }
+}
+
 interface GameData {
   gameSessions: GameSession[]
   statistics: Statistics
+  agent_personas?: AgentPersona[]
   settings: {
     autoSave: boolean
     jsonFormat: string
@@ -81,7 +109,7 @@ const itemVariants = {
 }
 
 export function GameAnalytics({ data, gameGradient = "from-blue-400 to-purple-600" }: GameAnalyticsProps) {
-  const { gameSessions, statistics } = data
+  const { gameSessions, statistics, agent_personas } = data
 
   // Prepare chart data
   const scoreProgressionData = gameSessions.map((session, index) => ({
@@ -102,6 +130,30 @@ export function GameAnalytics({ data, gameGradient = "from-blue-400 to-purple-60
     { name: "High Scores", value: statistics.newHighScores, color: "#10B981" },
     { name: "Regular Games", value: statistics.totalGamesPlayed - statistics.newHighScores, color: "#6B7280" },
   ]
+
+  // Prepare agent personas grouped bar chart data
+  const agentPersonasColors = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#EC4899"]
+  
+  // Get all unique goal keys for bar chart
+  const allGoalKeys = agent_personas?.reduce((keys, persona) => {
+    Object.keys(persona.goals).forEach(key => {
+      if (!keys.includes(key)) keys.push(key)
+    })
+    return keys
+  }, [] as string[]) || []
+
+  // Create grouped bar chart data structure
+  const groupedBarChartData = allGoalKeys.map(goalKey => {
+    const dataPoint: any = {
+      goal: goalKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    }
+    
+    agent_personas?.forEach((persona) => {
+      dataPoint[persona.name] = persona.goals[goalKey as keyof typeof persona.goals] || 0
+    })
+    
+    return dataPoint
+  })
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60)
@@ -377,6 +429,85 @@ export function GameAnalytics({ data, gameGradient = "from-blue-400 to-purple-60
           </Card>
         </motion.div>
       </div>
+
+      {/* Agent Personas Chart */}
+      {agent_personas && agent_personas.length > 0 && (
+        <motion.div variants={itemVariants}>
+          <Card className="bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-700/50 overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-gray-800/50 to-gray-700/50 border-b border-gray-700/50">
+              <CardTitle className="flex items-center space-x-3 text-lg font-bold text-gray-100">
+                <Users className="h-5 w-5 text-indigo-400" />
+                <span>Agent Personas Goal Comparison</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={groupedBarChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis 
+                    dataKey="goal" 
+                    stroke="#9CA3AF"
+                    tick={{ fill: "#9CA3AF", fontSize: 12 }}
+                    axisLine={{ stroke: "#374151" }}
+                  />
+                  <YAxis 
+                    domain={[0, 1]}
+                    stroke="#9CA3AF"
+                    tick={{ fill: "#9CA3AF", fontSize: 10 }}
+                    axisLine={{ stroke: "#374151" }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#1F2937",
+                      border: "1px solid #374151",
+                      borderRadius: "12px",
+                      color: "#F3F4F6",
+                    }}
+                  />
+                  <Legend />
+                  {agent_personas?.map((persona, index) => (
+                    <Bar
+                      key={persona.name}
+                      dataKey={persona.name}
+                      fill={agentPersonasColors[index % agentPersonasColors.length]}
+                      radius={[4, 4, 0, 0]}
+                      name={persona.name}
+                    />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+              
+              {/* Agent Personas Details */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                {agent_personas.map((persona, index) => (
+                  <div
+                    key={persona.name}
+                    className="p-4 bg-gray-700/50 rounded-2xl border border-gray-600/50"
+                  >
+                    <div className="flex items-center space-x-2 mb-2">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: agentPersonasColors[index % agentPersonasColors.length] }}
+                      />
+                      <h4 className="font-bold text-gray-200">{persona.name}</h4>
+                    </div>
+                    <p className="text-sm text-gray-400 mb-3">{persona.description}</p>
+                    <div className="space-y-1">
+                      <div className="text-xs text-gray-500">Movement: {persona.behavior_parameters.movement_speed}</div>
+                      {persona.behavior_parameters.target_priority && (
+                        <div className="text-xs text-gray-500">Priority: {persona.behavior_parameters.target_priority}</div>
+                      )}
+                      {persona.behavior_parameters.patrol_radius && (
+                        <div className="text-xs text-gray-500">Patrol: {persona.behavior_parameters.patrol_radius}m</div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
 
       {/* Detailed Sessions Table */}
       <motion.div variants={itemVariants}>

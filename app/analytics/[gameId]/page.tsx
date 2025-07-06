@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
+// Import agent personas data
+import agentPersonasData from "../../../sample-agent-data.json"
+
 // Enhanced mock data with full analytics for all games
 const gameData = {
   "flappy-bird": {
@@ -82,6 +85,7 @@ const gameData = {
         includeTimestamps: true,
         trackStatistics: true,
       },
+      agent_personas: agentPersonasData.agent_personas,
     },
   },
   "snake-game": {
@@ -128,6 +132,7 @@ const gameData = {
         includeTimestamps: true,
         trackStatistics: true,
       },
+      agent_personas: agentPersonasData.agent_personas,
     },
   },
   tetris: {
@@ -220,6 +225,7 @@ const gameData = {
         includeTimestamps: true,
         trackStatistics: true,
       },
+      agent_personas: agentPersonasData.agent_personas,
     },
   },
 }

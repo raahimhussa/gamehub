@@ -1,0 +1,61 @@
+{
+    "agent_personas": [
+      {
+        "name": "Explorer",
+        "description": "Prioritizes uncovering new areas of the map and interacting with environmental elements.",
+        "goals": {
+          "explore_coverage": 0.9,
+          "interaction_count": 0.7,
+          "combat_engagement": 0.2
+        },
+        "behavior_parameters": {
+          "movement_speed": "moderate",
+          "pathfinding_bias": "unexplored",
+          "avoid_conflict": true
+        }
+      },
+      {
+        "name": "Achiever",
+        "description": "Focuses on completing objectives and achieving high scores.",
+        "goals": {
+          "objective_completion": 1.0,
+          "score_maximization": 0.9,
+          "explore_coverage": 0.4
+        },
+        "behavior_parameters": {
+          "movement_speed": "fast",
+          "target_priority": "goal_objects",
+          "retry_failed_objectives": true
+        }
+      },
+      {
+        "name": "Defender",
+        "description": "Protects certain locations or NPCs and minimizes damage.",
+        "goals": {
+          "defend_zone_success": 0.9,
+          "ally_protection": 0.8,
+          "combat_engagement": 0.6
+        },
+        "behavior_parameters": {
+          "movement_speed": "slow",
+          "patrol_radius": 5.0,
+          "aggro_response_time": 0.5
+        }
+      },
+      {
+        "name": "Griefer",
+        "description": "Disrupts gameplay by attacking other agents or sabotaging progress.",
+        "goals": {
+          "agent_interference": 1.0,
+          "objective_disruption": 0.8,
+          "explore_coverage": 0.2
+        },
+        "behavior_parameters": {
+          "movement_speed": "fast",
+          "target_priority": "other_agents",
+          "ignore_objectives": true
+        }
+      }
+    ]
+  }
+  
