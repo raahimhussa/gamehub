@@ -20,9 +20,8 @@ export async function POST(request: NextRequest) {
     // Configure game-specific settings
     const gameConfigs: Record<string, any> = {
       'flappy-bird': {
-        location: "D:\\Aquila Play\\API\\app\\exec\\Flappy",
-        exe: "My project.exe",
-        config: "config.yaml"
+        location: "D:\\Aquila Play\\Executable\\Flappy",
+        exe: "My project.exe"
       },
       // Add other games here as needed
     }
@@ -32,13 +31,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Game configuration not found' }, { status: 404 })
     }
 
-    // Start the Unity game process
+    // Start the Unity game process (just like double-clicking the exe)
     const execPath = path.join(config.location, config.exe)
     
-    ;(global as any).gameProcess = spawn(execPath, [config.config], {
+    ;(global as any).gameProcess = spawn(execPath, [], {
       cwd: config.location,
       detached: false,
-      stdio: 'pipe'
+      stdio: 'ignore'
     })
 
     ;(global as any).gameProcess.on('error', (error: Error) => {
