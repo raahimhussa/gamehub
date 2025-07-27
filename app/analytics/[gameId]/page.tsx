@@ -1,234 +1,12 @@
+"use client"
+
 import { GameAnalytics } from "@/components/game-analytics"
+import { GameController } from "@/components/game-controller"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
-
-// Import agent personas data
-import agentPersonasData from "../../../sample-agent-data.json"
-
-// Enhanced mock data with full analytics for all games
-const gameData = {
-  "flappy-bird": {
-    name: "Flappy Bird",
-    icon: "🐦",
-    gradient: "from-sky-400 via-blue-500 to-blue-600",
-    data: {
-      gameSessions: [
-        {
-          sessionId: "session_001",
-          currentScore: 5,
-          highScore: 10,
-          timestamp: "2024-01-15 14:30:25",
-          isNewHighScore: false,
-          gameDuration: 45.67,
-          pipesPassed: 5,
-          playerName: "Player1",
-          difficulty: "normal",
-        },
-        {
-          sessionId: "session_002",
-          currentScore: 12,
-          highScore: 12,
-          timestamp: "2024-01-15 15:15:30",
-          isNewHighScore: true,
-          gameDuration: 78.92,
-          pipesPassed: 12,
-          playerName: "Player1",
-          difficulty: "normal",
-        },
-        {
-          sessionId: "session_003",
-          currentScore: 8,
-          highScore: 12,
-          timestamp: "2024-01-15 16:00:15",
-          isNewHighScore: false,
-          gameDuration: 62.34,
-          pipesPassed: 8,
-          playerName: "Player1",
-          difficulty: "normal",
-        },
-        {
-          sessionId: "session_004",
-          currentScore: 15,
-          highScore: 15,
-          timestamp: "2024-01-15 17:30:45",
-          isNewHighScore: true,
-          gameDuration: 95.12,
-          pipesPassed: 15,
-          playerName: "Player1",
-          difficulty: "normal",
-        },
-        {
-          sessionId: "session_005",
-          currentScore: 3,
-          highScore: 15,
-          timestamp: "2024-01-15 18:45:20",
-          isNewHighScore: false,
-          gameDuration: 28.76,
-          pipesPassed: 3,
-          playerName: "Player1",
-          difficulty: "normal",
-        },
-      ],
-      statistics: {
-        totalGamesPlayed: 5,
-        averageScore: 8.6,
-        bestScore: 15,
-        totalPipesPassed: 43,
-        totalPlayTime: 310.81,
-        newHighScores: 2,
-        lastUpdated: "2024-01-15 18:45:20",
-      },
-      settings: {
-        autoSave: true,
-        jsonFormat: "v1.0",
-        includeTimestamps: true,
-        trackStatistics: true,
-      },
-      agent_personas: agentPersonasData.agent_personas,
-    },
-  },
-  "snake-game": {
-    name: "Snake Game",
-    icon: "🐍",
-    gradient: "from-emerald-400 via-green-500 to-green-600",
-    data: {
-      gameSessions: [
-        {
-          sessionId: "snake_001",
-          currentScore: 45,
-          highScore: 45,
-          timestamp: "2024-01-14 20:30:15",
-          isNewHighScore: true,
-          gameDuration: 120.5,
-          pipesPassed: 45,
-          playerName: "Player1",
-          difficulty: "normal",
-        },
-        {
-          sessionId: "snake_002",
-          currentScore: 89,
-          highScore: 89,
-          timestamp: "2024-01-14 21:15:30",
-          isNewHighScore: true,
-          gameDuration: 180.25,
-          pipesPassed: 89,
-          playerName: "Player1",
-          difficulty: "normal",
-        },
-      ],
-      statistics: {
-        totalGamesPlayed: 12,
-        averageScore: 45.2,
-        bestScore: 89,
-        totalPipesPassed: 542,
-        totalPlayTime: 1250.5,
-        newHighScores: 4,
-        lastUpdated: "2024-01-14 20:30:15",
-      },
-      settings: {
-        autoSave: true,
-        jsonFormat: "v1.0",
-        includeTimestamps: true,
-        trackStatistics: true,
-      },
-      agent_personas: agentPersonasData.agent_personas,
-    },
-  },
-  tetris: {
-    name: "Tetris",
-    icon: "🧩",
-    gradient: "from-purple-400 via-violet-500 to-purple-600",
-    data: {
-      gameSessions: [
-        {
-          sessionId: "tetris_001",
-          currentScore: 1250,
-          highScore: 1250,
-          timestamp: "2024-01-13 16:22:10",
-          isNewHighScore: true,
-          gameDuration: 150.75,
-          pipesPassed: 125,
-          playerName: "Player1",
-          difficulty: "normal",
-        },
-        {
-          sessionId: "tetris_002",
-          currentScore: 2340,
-          highScore: 2340,
-          timestamp: "2024-01-13 17:45:20",
-          isNewHighScore: true,
-          gameDuration: 220.5,
-          pipesPassed: 234,
-          playerName: "Player1",
-          difficulty: "hard",
-        },
-      ],
-      statistics: {
-        totalGamesPlayed: 8,
-        averageScore: 1250,
-        bestScore: 2340,
-        totalPipesPassed: 1000,
-        totalPlayTime: 890.25,
-        newHighScores: 3,
-        lastUpdated: "2024-01-13 16:22:10",
-      },
-      settings: {
-        autoSave: true,
-        jsonFormat: "v1.0",
-        includeTimestamps: true,
-        trackStatistics: true,
-      },
-    },
-  },
-  "pac-man": {
-    name: "Pac-Man",
-    icon: "👻",
-    gradient: "from-amber-400 via-yellow-500 to-orange-500",
-    data: {
-      gameSessions: [
-        {
-          sessionId: "pacman_001",
-          currentScore: 3200,
-          highScore: 3200,
-          timestamp: "2024-01-12 19:45:30",
-          isNewHighScore: true,
-          gameDuration: 180.25,
-          pipesPassed: 320,
-          playerName: "Player1",
-          difficulty: "normal",
-        },
-        {
-          sessionId: "pacman_002",
-          currentScore: 5670,
-          highScore: 5670,
-          timestamp: "2024-01-12 20:30:45",
-          isNewHighScore: true,
-          gameDuration: 240.5,
-          pipesPassed: 567,
-          playerName: "Player1",
-          difficulty: "hard",
-        },
-      ],
-      statistics: {
-        totalGamesPlayed: 15,
-        averageScore: 3200,
-        bestScore: 5670,
-        totalPipesPassed: 4800,
-        totalPlayTime: 2100.75,
-        newHighScores: 6,
-        lastUpdated: "2024-01-12 19:45:30",
-      },
-      settings: {
-        autoSave: true,
-        jsonFormat: "v1.0",
-        includeTimestamps: true,
-        trackStatistics: true,
-      },
-      agent_personas: agentPersonasData.agent_personas,
-    },
-  },
-}
+import { useEffect, useState } from "react"
+import { fetchGameData, GameInfo } from "@/lib/api"
 
 interface AnalyticsPageProps {
   params: {
@@ -237,14 +15,47 @@ interface AnalyticsPageProps {
 }
 
 export default function AnalyticsPage({ params }: AnalyticsPageProps) {
-  const game = gameData[params.gameId as keyof typeof gameData]
+  const [game, setGame] = useState<GameInfo | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  if (!game) {
+  useEffect(() => {
+    async function loadGameData() {
+      try {
+        const gameData = await fetchGameData(params.gameId)
+        if (gameData) {
+          setGame(gameData)
+        } else {
+          setError('Game not found')
+        }
+      } catch (err) {
+        console.error('Error loading game data:', err)
+        setError('Failed to load game data')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadGameData()
+  }, [params.gameId])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-xl text-gray-300">Loading game analytics...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !game) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center py-12">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Game Not Found</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">{error || 'Game Not Found'}</h1>
             <Link href="/">
               <Button>
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -294,6 +105,11 @@ export default function AnalyticsPage({ params }: AnalyticsPageProps) {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Game Controller */}
+          <div className="mb-8">
+            <GameController gameId={params.gameId} />
           </div>
 
           {/* Analytics Component */}

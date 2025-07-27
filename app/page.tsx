@@ -4,66 +4,8 @@ import { GameCard } from "@/components/game-card"
 import { AnimatedCounter } from "@/components/animated-counter"
 import { Gamepad2, TrendingUp, Users, Clock, Sparkles, Zap, Target, Award } from "lucide-react"
 import { motion } from "framer-motion"
-
-// Enhanced mock data with premium styling
-const games = [
-  {
-    id: "flappy-bird",
-    name: "Flappy Bird",
-    icon: "🐦",
-    totalSessions: 5,
-    averageScore: 8.6,
-    bestScore: 15,
-    totalPlayTime: 310.81,
-    lastPlayed: "2024-01-15 18:45:20",
-    gradient: "from-sky-400 via-blue-500 to-blue-600",
-    accentColor: "text-blue-400",
-    trend: "+12%",
-    status: "active",
-  },
-  {
-    id: "snake-game",
-    name: "Snake Game",
-    icon: "🐍",
-    totalSessions: 12,
-    averageScore: 45.2,
-    bestScore: 89,
-    totalPlayTime: 1250.5,
-    lastPlayed: "2024-01-14 20:30:15",
-    gradient: "from-emerald-400 via-green-500 to-green-600",
-    accentColor: "text-emerald-400",
-    trend: "+8%",
-    status: "trending",
-  },
-  {
-    id: "tetris",
-    name: "Tetris",
-    icon: "🧩",
-    totalSessions: 8,
-    averageScore: 1250,
-    bestScore: 2340,
-    totalPlayTime: 890.25,
-    lastPlayed: "2024-01-13 16:22:10",
-    gradient: "from-purple-400 via-violet-500 to-purple-600",
-    accentColor: "text-purple-400",
-    trend: "+15%",
-    status: "hot",
-  },
-  {
-    id: "pac-man",
-    name: "Pac-Man",
-    icon: "👻",
-    totalSessions: 15,
-    averageScore: 3200,
-    bestScore: 5670,
-    totalPlayTime: 2100.75,
-    lastPlayed: "2024-01-12 19:45:30",
-    gradient: "from-amber-400 via-yellow-500 to-orange-500",
-    accentColor: "text-yellow-400",
-    trend: "+22%",
-    status: "popular",
-  },
-]
+import { useEffect, useState } from "react"
+import { fetchAllGames, formatGameForCard, GameInfo } from "@/lib/api"
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -81,16 +23,69 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 100,
     },
   },
 }
 
 export default function Dashboard() {
+  const [games, setGames] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadGames() {
+      try {
+        const gamesData = await fetchAllGames()
+        const formattedGames = Object.entries(gamesData).map(([gameId, gameInfo]) => 
+          formatGameForCard(gameId, gameInfo)
+        )
+        setGames(formattedGames)
+      } catch (error) {
+        console.error('Error loading games:', error)
+        // Fallback to mock data if API fails
+        setGames([
+          {
+            id: "flappy-bird",
+            name: "Flappy Bird",
+            icon: "🐦",
+            totalSessions: 5,
+            averageScore: 8.6,
+            bestScore: 15,
+            totalPlayTime: 310.81,
+            lastPlayed: "2024-01-15 18:45:20",
+            gradient: "from-sky-400 via-blue-500 to-blue-600",
+            accentColor: "text-blue-400",
+            trend: "+12%",
+            status: "active",
+          }
+        ])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadGames()
+  }, [])
+
   const totalSessions = games.reduce((sum, game) => sum + game.totalSessions, 0)
   const totalPlayTime = games.reduce((sum, game) => sum + game.totalPlayTime, 0)
   const avgPerformance = 87.5
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+            className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"
+          />
+          <p className="text-xl text-gray-300">Loading game analytics...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-800">
@@ -138,7 +133,7 @@ export default function Dashboard() {
           </motion.div>
 
           {/* Enhanced Overview Stats */}
-          {/* <motion.div
+          <motion.div
             className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-16"
             variants={containerVariants}
             initial="hidden"
@@ -156,7 +151,7 @@ export default function Dashboard() {
                         className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
                       />
                       <span className="text-sm text-emerald-400 font-semibold bg-emerald-400/10 px-2 py-1 rounded-full">
-                        +2 this week
+                        +{games.length} active
                       </span>
                     </div>
                   </div>
@@ -179,7 +174,7 @@ export default function Dashboard() {
                         className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent"
                       />
                       <span className="text-sm text-emerald-400 font-semibold bg-emerald-400/10 px-2 py-1 rounded-full">
-                        +18%
+                        Live data
                       </span>
                     </div>
                   </div>
@@ -203,7 +198,7 @@ export default function Dashboard() {
                         className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
                       />
                       <span className="text-sm text-emerald-400 font-semibold bg-emerald-400/10 px-2 py-1 rounded-full">
-                        +25%
+                        Real-time
                       </span>
                     </div>
                   </div>
@@ -227,7 +222,7 @@ export default function Dashboard() {
                         className="text-4xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent"
                       />
                       <span className="text-sm text-emerald-400 font-semibold bg-emerald-400/10 px-2 py-1 rounded-full">
-                        +5.2%
+                        Optimized
                       </span>
                     </div>
                   </div>
@@ -237,7 +232,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </motion.div>
-          </motion.div> */}
+          </motion.div>
 
           {/* Enhanced Games Grid */}
           <motion.div
