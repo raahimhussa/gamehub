@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     // Configure game-specific settings
     const gameConfigs: Record<string, any> = {
       'flappy-bird': {
-        location: "D:\\Aquila Play\\Executable\\Flappy",
+        location: "D:\\Aquila Play\\Executables\\Flappy",
         exe: "My project.exe"
       },
       // Add other games here as needed
