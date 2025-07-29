@@ -26,6 +26,11 @@ export interface AgentPersona {
     aggro_response_time?: number
     ignore_objectives?: boolean
   }
+  alive_reward_modifier?: number
+  death_penalty_modifier?: number
+  jump_frequency_modifier?: number
+  risk_tolerance?: number
+  score_reward_modifier?: number
 }
 
 export interface GameSession {
@@ -38,6 +43,10 @@ export interface GameSession {
   pipesPassed: number
   playerName: string
   difficulty: string
+  agentPersona?: string
+  averageJumpInterval?: number
+  jumps?: number
+  longestSurvivalTime?: number
 }
 
 export interface GameStatistics {
@@ -48,6 +57,9 @@ export interface GameStatistics {
   totalPlayTime: number
   newHighScores: number
   lastUpdated: string
+  averageGameDuration?: number
+  bestSurvivalTime?: number
+  totalJumps?: number
 }
 
 export interface GameSettings {
@@ -55,6 +67,7 @@ export interface GameSettings {
   jsonFormat: string
   includeTimestamps: boolean
   trackStatistics: boolean
+  enablePersonaTracking?: boolean
 }
 
 export interface GameData {
@@ -83,8 +96,9 @@ export async function fetchGameData(gameId: string): Promise<GameInfo | null> {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
     
-    const data: ApiResponse = await response.json()
-    return data[gameId] || null
+    // The API returns the data directly, not wrapped in an object with gameId as key
+    const data: GameInfo = await response.json()
+    return data
   } catch (error) {
     console.error(`Error fetching game data for ${gameId}:`, error)
     return null
